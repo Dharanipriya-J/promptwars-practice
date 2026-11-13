@@ -1,0 +1,195 @@
+/*
+ * PitchPulse 2026 - Stadium Operations & Accessible Wayfinding Styles
+ * WCAG 2.1 AA Compliant • High-contrast palette • Zero CSS compilation in browser
+ */
+
+:root {
+  --color-pitch-red: #FF2A55;
+  --color-pitch-green: #00FF87;
+  --color-pitch-yellow: #FFD200;
+  --color-pitch-navy: #090E1A;
+  --color-pitch-slate: #121A2D;
+  --color-pitch-border: #1F2C4A;
+  --color-text-primary: #F8FAFC;
+  --color-text-muted: #94A3B8;
+}
+
+/* Skip link for keyboard and screen reader accessibility */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 16px;
+  background: var(--color-pitch-yellow);
+  color: var(--color-pitch-navy);
+  padding: 12px 20px;
+  font-weight: 800;
+  font-size: 14px;
+  border-radius: 8px;
+  z-index: 9999;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: top 0.15s ease-in-out;
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* High-Contrast Focus Rings */
+:focus-visible {
+  outline: 3px solid var(--color-pitch-green) !important;
+  outline-offset: 3px !important;
+}
+
+/* Accessibility: 44px Minimum Touch Targets */
+button,
+[role="button"],
+input,
+select,
+textarea,
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Accessible Font Sizes: Minimum 12px everywhere */
+* {
+  font-size: max(12px, 1em);
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Glass panel surfaces */
+.glass-panel {
+  background: rgba(18, 26, 45, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(31, 44, 74, 0.85);
+}
+
+.neon-glow-green {
+  box-shadow: 0 0 25px rgba(0, 255, 135, 0.25);
+}
+
+.neon-glow-red {
+  box-shadow: 0 0 25px rgba(255, 42, 85, 0.25);
+}
+
+.neon-glow-yellow {
+  box-shadow: 0 0 25px rgba(255, 210, 0, 0.25);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-pitch-navy);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-pitch-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-pitch-green);
+}
+
+/* Gate Density Indicators: never rely on color alone */
+.density-badge-surge {
+  background: rgba(255, 42, 85, 0.2);
+  color: #FF6685;
+  border: 1px solid var(--color-pitch-red);
+}
+.density-badge-moderate {
+  background: rgba(255, 210, 0, 0.2);
+  color: #FFE033;
+  border: 1px solid var(--color-pitch-yellow);
+}
+.density-badge-normal {
+  background: rgba(0, 255, 135, 0.2);
+  color: #33FFA3;
+  border: 1px solid var(--color-pitch-green);
+}
+
+/* In-Page Toast Alert */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.toast {
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast-success {
+  background: #092B1C;
+  color: #00FF87;
+  border-color: #00FF87;
+}
+
+.toast-error {
+  background: #2D0F16;
+  color: #FF6685;
+  border-color: #FF2A55;
+}
+
+.toast-info {
+  background: #14233D;
+  color: #70B4FF;
+  border-color: #388BFD;
+}
+
+/* Speech synthesis button */
+.speak-btn {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.speak-btn:hover {
+  color: #00FF87;
+  background: rgba(0, 255, 135, 0.1);
+}
+
+/* RTL support for Arabic */
+[dir="rtl"] {
+  text-align: right;
+}
+[dir="rtl"] .chat-user {
+  justify-content: flex-start;
+}
+[dir="rtl"] .chat-bot {
+  justify-content: flex-end;
+}

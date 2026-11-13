@@ -1,44 +1,59 @@
 """
-PITCHPULSE 2026 - FastAPI Production Application Entry Point
-Criterion #1: Code Quality, Criterion #2: Security, Criterion #6: Google Cloud Run
+PitchPulse 2026 - Production FastAPI Application Entry Point
+Orchestrates AI services, stadium telemetry, accessible wayfinding, and security middleware.
 """
 
-import os
 import logging
 import logging.config
+import pathlib
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from dotenv import load_dotenv
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-from src.routes.stadium import router as stadium_router
+from src.config import settings
 from src.routes.assistant import router as assistant_router
-from src.utils.security import SecurityHeadersMiddleware, RateLimitMiddleware
+from src.routes.stadium import router as stadium_router
 from src.utils.cache import cache_stats
+from src.utils.security import RateLimitMiddleware, SecurityHeadersMiddleware
 
-load_dotenv()
-
-# Structured logging configuration (Criterion #1: Code Quality)
-logging.config.dictConfig({
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "standard": {
-            "format": "[%(asctime)s] %(levelname)s %(name)s — %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        }
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "standard",
-            "level": "INFO",
-        }
-    },
-    "root": {"handlers": ["console"], "level": "INFO"},
-})
+# Structured logging configuration
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "format": "[%(asctime)s] %(levelname)s %(name)s — %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "standard",
+                "level": settings.log_level,
+            }
+        },
+        "root": {"handlers": ["console"], "level": settings.log_level},
+    }
+)
 
 logger = logging.getLogger("pitchpulse.main")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application startup checks and graceful shutdown lifecycle."""
+    if not settings.gemini_api_key:
+        logger.warning("GEMINI_API_KEY is not set. Multilingual assistant running in offline resilience mode.")
+    if not settings.staff_secret_token or settings.staff_secret_token == "fifa-staff-secure-2026":
+        logger.info("Using standard operations staff secret for development/testing.")
+    yield
+
 
 app = FastAPI(
     title="PitchPulse 2026 // FIFA Stadium Intelligence API",
@@ -49,28 +64,48 @@ app = FastAPI(
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
-# Security Middleware (Criterion #2 — applied before CORS)
+# Compression & Security Middleware Stack
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
-# CORS — credentials disabled for wildcard origin (Criterion #2 fix)
+# Cross-Origin Resource Sharing with strict origin configuration
+allowed_origin = settings.allowed_origin or "http://localhost:8000"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[allowed_origin, "http://localhost:8000", "http://127.0.0.1:8000"],
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "X-Staff-Token"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "X-Staff-Token", "X-Forwarded-For"],
 )
 
+# API Routers
 app.include_router(stadium_router)
 app.include_router(assistant_router)
+
+# Mount static directory for JS, CSS, and SVG diagrams
+STATIC_DIR = pathlib.Path(__file__).parent.parent / "static"
+STATIC_DIR.mkdir(exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+DOCS_DIR = pathlib.Path(__file__).parent.parent / "docs"
+if DOCS_DIR.exists():
+    app.mount("/docs/screenshots", StaticFiles(directory=str(DOCS_DIR / "screenshots")), name="screenshots")
+
+
+@app.get("/", include_in_schema=False)
+async def serve_index():
+    """Serves the accessible PitchPulse 2026 frontend single-page application."""
+    index_file = pathlib.Path(__file__).parent.parent / "index.html"
+    return FileResponse(index_file)
 
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    """Global error handler — prevents internal stack traces from leaking (Criterion #2)."""
+    """Global exception handler preventing stack traces and internal details from leaking."""
     logger.error("Unhandled exception on %s: %s", request.url.path, exc)
     return JSONResponse(
         status_code=500,
@@ -83,12 +118,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.get("/api/health", tags=["System"])
 def health_check():
-    """Google Cloud Run container liveness probe with cache diagnostics."""
+    """Liveness probe returning operational state, version, and cache diagnostics."""
     return {
         "status": "healthy",
         "service": "PitchPulse 2026",
         "version": "2.0.0",
         "deployment_target": "Google Cloud Run Ready",
-        "gemini_configured": bool(os.getenv("GEMINI_API_KEY")),
+        "gemini_configured": bool(settings.gemini_api_key),
         "cache": cache_stats(),
     }

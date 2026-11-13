@@ -1,14 +1,15 @@
 """
-PITCHPULSE 2026 - Bounded LRU Cache & Efficiency Utilities
-Criterion #3: Efficiency (Bounded eviction, real latency measurement, Gemini response caching)
+PitchPulse 2026 - Bounded LRU Cache & Efficiency Utilities
+Provides memory-safe caching, deterministic routing, and string normalization for AI operations.
 """
 
-import time
+import hashlib
 import logging
 import re
-from functools import lru_cache
+import time
 from collections import OrderedDict
-from typing import Any, Optional, Tuple
+from functools import lru_cache
+from typing import Any
 
 logger = logging.getLogger("pitchpulse.cache")
 
@@ -16,6 +17,12 @@ logger = logging.getLogger("pitchpulse.cache")
 _MAX_CACHE_ENTRIES = 256
 _TTL_SECONDS = 60
 _CACHE: OrderedDict = OrderedDict()
+
+
+def cache_key_for_prompt(prompt: str, lang: str, role: str) -> str:
+    """Generates a collision-resistant SHA-256 cache key for prompt text, language, and role."""
+    normalized = f"{prompt.strip().lower()}:{lang.strip().lower()}:{role.strip().lower()}"
+    return f"ai_resp_{hashlib.sha256(normalized.encode('utf-8')).hexdigest()[:32]}"
 
 
 def timed_cache_set(key: str, value: Any) -> None:
@@ -27,7 +34,7 @@ def timed_cache_set(key: str, value: Any) -> None:
     logger.debug("Cache SET: %s (size=%d)", key, len(_CACHE))
 
 
-def timed_cache_get(key: str) -> Optional[Any]:
+def timed_cache_get(key: str) -> Any | None:
     """Returns cached value if still within TTL, else returns None."""
     entry = _CACHE.get(key)
     if entry is None:
@@ -52,6 +59,11 @@ def _evict_expired() -> int:
     return len(expired)
 
 
+def reset_cache() -> None:
+    """Purges all entries from the active cache for test isolation."""
+    _CACHE.clear()
+
+
 def cache_stats() -> dict:
     """Returns cache diagnostic metadata for health endpoint."""
     _evict_expired()
@@ -65,17 +77,18 @@ def cache_stats() -> dict:
 @lru_cache(maxsize=256)
 def parse_section_number(section_code: str) -> int:
     """
-    Extracts integer section number via regex. Fixes the section '104' parsed as '10' bug.
-    Uses LRU cache for sub-millisecond repeated lookups.
+    Extracts integer section number via regex. Fixes section '104' parsed as '10' issue.
+    Uses LRU cache for fast repeated lookups.
     """
     match = re.search(r"\d+", section_code)
     return int(match.group()) if match else 100
 
 
 @lru_cache(maxsize=256)
-def calculate_optimal_path(section_code: str, mobility_profile: str) -> Tuple[str, str, str, int]:
+def calculate_optimal_path(section_code: str, mobility_profile: str) -> tuple[str, str, str, int]:
     """
-    Deterministic LRU-cached routing using corrected integer section parser.
+    Deterministic routing using integer section parser.
+    Ensures accessibility profiles route via dedicated step-free facilities.
     Returns (gate, elevator, quiet_room, walk_minutes).
     """
     sec_num = parse_section_number(section_code)

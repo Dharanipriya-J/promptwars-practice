@@ -1,13 +1,14 @@
 """
-PITCHPULSE 2026 - Multilingual AI Concierge API Routes
-Criterion #6: Google Services Usage (Gemini 2.5 Flash + Google Maps Transit)
+PitchPulse 2026 - Multilingual AI Concierge API Routes
+Exposes the Google Gemini 2.5 Flash natural language concierge for fan and staff assistance.
 """
 
 import logging
-from fastapi import APIRouter, HTTPException, status
-from src.models.schemas import ChatQueryRequest, ChatQueryResponse
+
+from fastapi import APIRouter
+
 from services.gemini_service import generate_multilingual_assistance
-from src.utils.cache import timed_cache_get
+from src.models.schemas import ChatQueryRequest, ChatQueryResponse
 
 logger = logging.getLogger("pitchpulse.assistant")
 router = APIRouter(prefix="/api/assistant", tags=["Multilingual AI Concierge"])
@@ -17,11 +18,14 @@ router = APIRouter(prefix="/api/assistant", tags=["Multilingual AI Concierge"])
 def query_stadium_assistant(req: ChatQueryRequest):
     """
     Submits a natural language query to the Gemini-powered multilingual concierge.
-    Supports EN, ES, FR, PT, AR via real language detection and translation.
-    Returns structured response with Google Maps transit link when applicable.
+    Supports EN, ES, FR, PT, and AR with real language classification and transit links.
     """
-    logger.info("AI query received: lang=%s role=%s prompt_len=%d",
-                req.language, req.user_role, len(req.prompt))
+    logger.info(
+        "AI query received: lang=%s role=%s prompt_len=%d",
+        req.language,
+        req.user_role,
+        len(req.prompt),
+    )
 
     result = generate_multilingual_assistance(
         prompt=req.prompt,

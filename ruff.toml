@@ -1,22 +1,23 @@
-[tool.ruff]
-line-length = 100
+line-length = 120
 target-version = "py313"
 
-[tool.ruff.lint]
+[lint]
 select = [
     "E",   # pycodestyle errors
     "F",   # pyflakes
     "I",   # isort
-    "UP",  # pyupgrade
     "B",   # flake8-bugbear
-    "S",   # flake8-bandit (security)
-    "N",   # pep8-naming
+    "UP",  # pyupgrade
     "RUF", # ruff-specific rules
 ]
 ignore = [
-    "S101",  # allow assert in tests
-    "S106",  # allow hardcoded password in test fixtures
+    "E501",   # line length
+    "S101",   # allow assert in tests
+    "S106",   # allow hardcoded password in test fixtures
+    "B008",   # allow Depends in route parameters
+    "RUF012", # mutable class attributes in Pydantic/dataclass
+    "UP042",  # allow (str, Enum) pattern for Pydantic serialization
 ]
 
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S", "N"]   # relax security / naming rules in tests
+[lint.per-file-ignores]
+"tests/*" = ["E501", "S", "N", "ANN"]

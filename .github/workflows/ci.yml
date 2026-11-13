@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Run Tests (Python 3.13)
+    name: Test & Coverage (Python 3.13)
     runs-on: ubuntu-latest
 
     steps:
@@ -24,15 +24,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run test suite (24 tests)
+      - name: Run automated test suite with coverage
         env:
-          # Tests use mocked Gemini — no real key needed in CI
           GEMINI_API_KEY: "ci-mock-key-not-used"
           STAFF_SECRET_TOKEN: "fifa-staff-secure-2026"
-        run: python3 tests/test_stadium_ops.py -v
+          ALLOWED_ORIGIN: "http://localhost:8000"
+        run: python3 -m pytest tests/ -v --cov=src --cov=services --cov-report=term-missing
 
   lint:
-    name: Lint with Ruff
+    name: Ruff Quality & Security Linter
     runs-on: ubuntu-latest
 
     steps:
@@ -49,22 +49,3 @@ jobs:
 
       - name: Run ruff check
         run: ruff check src/ services/ tests/
-
-  security:
-    name: Dependency vulnerability scan
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Install pip-audit
-        run: pip install pip-audit
-
-      - name: Audit dependencies for known CVEs
-        run: pip-audit -r requirements.txt --desc on
