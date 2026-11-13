@@ -185,6 +185,20 @@ function renderGates(gates) {
   if (!container) return;
   container.innerHTML = "";
 
+  // Show simulated data notice above the grid
+  let notice = document.getElementById("simulatedDataNotice");
+  if (!notice) {
+    notice = document.createElement("p");
+    notice.id = "simulatedDataNotice";
+    notice.className = "text-xs text-pitch-yellow font-bold mb-3 flex items-center gap-1";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+    notice.textContent = "⚠ DEMO — SIMULATED DATA. Not real sensor readings.";
+    container.parentElement.insertBefore(notice, container);
+  }
+
+  const fetchedAt = new Date().toLocaleTimeString();
+
   gates.forEach((g) => {
     const card = document.createElement("article");
     card.className = "glass-panel p-5 rounded-2xl border border-pitch-border flex flex-col justify-between";
@@ -268,6 +282,19 @@ function renderGates(gates) {
     surgeForecastRow.className = "flex justify-between";
     surgeForecastRow.innerHTML = `<span class="text-slate-400">15m Forecast:</span><span class="font-bold text-pitch-yellow">${g.predicted_surge_15m || g.density_percentage}%</span>`;
     detailsDiv.appendChild(surgeForecastRow);
+
+    // Data freshness indicator
+    const freshRow = document.createElement("div");
+    freshRow.className = "flex justify-between pt-1 border-t border-slate-800 mt-1";
+    const freshLabel = document.createElement("span");
+    freshLabel.className = "text-slate-500 italic";
+    freshLabel.textContent = "⚠ Simulated · Updated:";
+    const freshValue = document.createElement("span");
+    freshValue.className = "text-slate-500 font-mono text-xs";
+    freshValue.textContent = fetchedAt;
+    freshRow.appendChild(freshLabel);
+    freshRow.appendChild(freshValue);
+    detailsDiv.appendChild(freshRow);
 
     card.appendChild(detailsDiv);
     container.appendChild(card);
@@ -603,7 +630,13 @@ async function submitIncident() {
   const type = document.getElementById("incType").value;
   const priority = document.getElementById("incPriority").value;
   const desc = document.getElementById("incDesc").value.trim() || "Crowd surge reported near turnstiles.";
-  const staffToken = document.getElementById("staffTokenInput").value.trim() || "fifa-staff-secure-2026";
+  const staffToken = document.getElementById("staffTokenInput").value.trim();
+
+  if (!staffToken) {
+    showToast("Please enter your staff authentication token before dispatching.", "error");
+    document.getElementById("staffTokenInput").focus();
+    return;
+  }
 
   try {
     const res = await fetch(`${API_BASE}/api/stadium/incident`, {
@@ -624,18 +657,42 @@ async function submitIncident() {
     if (res.ok) {
       const data = await res.json();
       closeIncidentModal();
-      showToast(`Incident ${data.incident_id} dispatched: Assigned to ${data.assigned_team}.`, "success");
+      showToast(
+        `Incident ${data.incident_id} confirmed. AI recommendation generated. Assigned team: ${data.assigned_team}. ETA: ${data.estimated_response_minutes} min.`,
+        "success"
+      );
       return;
-    } else if (res.status === 401) {
-      showToast("Authentication Failed: Invalid or missing X-Staff-Token.", "error");
+    }
+
+    // Handle specific HTTP error codes
+    if (res.status === 401) {
+      showToast("Authentication Failed: Invalid or missing staff token.", "error");
+      return;
+    } else if (res.status === 403) {
+      showToast("Authorization Denied: Your token does not have permission for incident dispatch.", "error");
+      return;
+    } else if (res.status === 422) {
+      showToast("Invalid incident data: Please check all fields and try again.", "error");
+      return;
+    } else if (res.status === 429) {
+      showToast("Too many requests. Please wait a moment before retrying.", "error");
+      return;
+    } else if (res.status === 503) {
+      showToast("Incident dispatch is temporarily unavailable — contact stadium operations directly.", "error");
+      return;
+    } else {
+      let detail = `Server error (HTTP ${res.status}).`;
+      try {
+        const errData = await res.json();
+        if (errData.detail) detail = `Error: ${errData.detail}`;
+      } catch (_) { /* ignore JSON parse errors */ }
+      showToast(`${detail} Incident NOT dispatched. Contact operations directly.`, "error");
       return;
     }
   } catch (err) {
-    console.warn("Incident submission failed:", err);
+    console.warn("Incident submission network error:", err);
+    showToast("Network error — incident NOT dispatched. Contact stadium operations directly.", "error");
   }
-
-  closeIncidentModal();
-  showToast(`Incident dispatched for ${zone}. Rapid Response Unit 4 assigned.`, "success");
 }
 
 // Global hookups for HTML inline buttons

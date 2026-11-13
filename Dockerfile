@@ -22,7 +22,8 @@ COPY index.html ./index.html
 COPY .env.example .env.example
 
 # Static assets (served by FastAPI StaticFiles if present)
-COPY static/ ./static/ 2>/dev/null || true
+RUN mkdir -p ./static ./docs
+COPY static/ ./static/
 
 # Non-root execution
 RUN chown -R appuser:appgroup /app

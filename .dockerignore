@@ -1,0 +1,21 @@
+# PitchPulse 2026 — Docker ignore file
+.env
+.env.local
+.env.*.local
+*.pyc
+__pycache__/
+*.zip
+.git/
+.gitignore
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+node_modules/
+venv/
+.venv/
+*.log
+pitchpulse-fifa2026-solution.zip
+docs/
+tests/
+README.md

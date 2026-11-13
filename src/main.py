@@ -50,8 +50,7 @@ async def lifespan(app: FastAPI):
     """Application startup checks and graceful shutdown lifecycle."""
     if not settings.gemini_api_key:
         logger.warning("GEMINI_API_KEY is not set. Multilingual assistant running in offline resilience mode.")
-    if not settings.staff_secret_token or settings.staff_secret_token == "fifa-staff-secure-2026":
-        logger.info("Using standard operations staff secret for development/testing.")
+    settings.validate_on_startup()
     yield
 
 

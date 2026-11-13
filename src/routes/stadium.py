@@ -156,13 +156,65 @@ def calculate_accessible_route(payload: AccessibleRouteRequest):
         payload.ticket_section, payload.mobility_profile.value
     )
 
+    # Determine actual step_free status by checking the assigned gate's accessible_ramp field.
+    # This prevents returning step_free=True for a gate that lacks a ramp.
+    # For wheelchair/low_mobility profiles: if the assigned gate has no ramp, find the best
+    # accessible alternative rather than returning an inaccessible route.
+    needs_step_free = payload.mobility_profile.value in ("wheelchair", "low_mobility", "sensory_sensitive")
+
+    # Find the gate record matching the recommended gate name
+    gate_record = None
+    for g in GATES_DATA:
+        if g.gate_id in gate.lower().replace(" ", "-"):
+            gate_record = g
+            break
+    # Fallback: search by partial name match
+    if gate_record is None:
+        for g in GATES_DATA:
+            if any(part in gate for part in [g.gate_id.upper(), g.gate_id.capitalize()]):
+                gate_record = g
+                break
+
+    # Verify the route is truly step-free if the profile requires it
+    route_accessible = True
+    accessibility_warning = None
+
+    if needs_step_free and gate_record is not None and not gate_record.accessible_ramp:
+        # The assigned gate has no ramp — find an accessible alternative
+        accessible_gates = [g for g in GATES_DATA if g.accessible_ramp and g.status_level.value != "surge"]
+        if accessible_gates:
+            # Prefer least-crowded accessible gate
+            best = min(accessible_gates, key=lambda g: g.density_percentage)
+            original_gate = gate
+            gate = f"{best.name} [Rerouted — {original_gate.split('(')[0].strip()} inaccessible]"
+            gate_record = best
+            logger.warning(
+                "Rerouted %s profile: original gate has no ramp. Using %s instead.",
+                payload.mobility_profile.value,
+                best.gate_id,
+            )
+        else:
+            route_accessible = False
+            accessibility_warning = (
+                "No fully accessible step-free gate is currently available. "
+                "Please contact a stadium accessibility assistant for personal escort."
+            )
+            logger.warning("No accessible gate available for mobility profile %s.", payload.mobility_profile.value)
+
+    # Determine final step_free value: True only if the entire route is verified accessible
+    is_step_free = route_accessible and (gate_record.accessible_ramp if gate_record else False or not needs_step_free)
+
     # Dynamic safety check: If sensory route resolves to a surging gate, redirect to Gate B
     if payload.mobility_profile.value == "sensory_sensitive":
         gate_c = next((g for g in GATES_DATA if g.gate_id == "gate-c"), None)
         if gate_c and gate_c.density_percentage >= 70:
-            logger.info("Rerouting sensory-sensitive fan away from congested Gate C to Gate B.")
-            gate = "Gate B (East Accessible Concourse — Quiet Alternate) — MetLife Stadium"
-            quiet_room = "Sensory Quiet Suite #2 (North Mezzanine Level 2) — Quiet zone active"
+            # Also check that gate B is accessible
+            gate_b = next((g for g in GATES_DATA if g.gate_id == "gate-b"), None)
+            if gate_b and gate_b.accessible_ramp:
+                logger.info("Rerouting sensory-sensitive fan away from congested Gate C to Gate B.")
+                gate = "Gate B (East Accessible Concourse — Quiet Alternate) — MetLife Stadium"
+                quiet_room = "Sensory Quiet Suite #2 (North Mezzanine Level 2) — Quiet zone active"
+                is_step_free = True
 
     maps_url = build_maps_transit_url(f"MetLife+Stadium+Section+{payload.ticket_section}+East+Rutherford+NJ")
     logger.info(
@@ -179,8 +231,13 @@ def calculate_accessible_route(payload: AccessibleRouteRequest):
             "Follow illuminated high-contrast tactile flooring path (zero stairs)",
             f"Board {elevator} — ADA compliant with audible floor alerts",
             f"Exit at Concourse Level — direct level path to Section {payload.ticket_section.upper()}",
+            *(
+                [f"⚠ Accessibility Notice: {accessibility_warning}"]
+                if accessibility_warning
+                else []
+            ),
         ],
-        step_free=True,
+        step_free=is_step_free,
         nearest_quiet_room=quiet_room,
         nearest_elevator=elevator,
         estimated_walk_minutes=walk_time,

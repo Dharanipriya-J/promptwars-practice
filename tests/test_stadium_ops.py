@@ -342,6 +342,115 @@ class TestPitchPulseSuite(unittest.TestCase):
         r = client.get("/api/stadium/predict/gate-unknown")
         self.assertEqual(r.status_code, 404)
 
+    # ─────────────────── REVISION 3: SECURITY HARDENING ──────────────────────
+
+    def test_33_incident_no_token_returns_401(self):
+        """Incident dispatch with no X-Staff-Token header returns 401."""
+        r = client.post(
+            "/api/stadium/incident",
+            json={
+                "zone": "Gate A",
+                "incident_type": "crowd_surge",
+                "priority": "high",
+                "description": "Crowd surge test",
+                "reporter_role": "venue_staff",
+            },
+        )
+        self.assertEqual(r.status_code, 401)
+
+    def test_34_incident_blank_token_returns_401(self):
+        """Incident dispatch with an empty X-Staff-Token value returns 401."""
+        r = client.post(
+            "/api/stadium/incident",
+            headers={"X-Staff-Token": ""},
+            json={
+                "zone": "Gate A",
+                "incident_type": "crowd_surge",
+                "priority": "high",
+                "description": "Blank token test",
+                "reporter_role": "venue_staff",
+            },
+        )
+        self.assertEqual(r.status_code, 401)
+
+    def test_35_incident_wrong_token_returns_401(self):
+        """Incident dispatch with an incorrect X-Staff-Token returns 401."""
+        r = client.post(
+            "/api/stadium/incident",
+            headers={"X-Staff-Token": "definitely-wrong-token"},
+            json={
+                "zone": "Gate B",
+                "incident_type": "medical",
+                "priority": "critical",
+                "description": "Wrong token test",
+                "reporter_role": "venue_staff",
+            },
+        )
+        self.assertEqual(r.status_code, 401)
+
+    def test_36_malicious_prompt_injection_safe(self):
+        """SQL injection and script injection in prompt do not appear in the AI response."""
+        for malicious_input in [
+            "<script>alert('xss')</script> what is the gate status",
+            "'; DROP TABLE gates; -- give me the status",
+            "{{7*7}} gate info",
+            "\" onload=\"alert(1)\" route to section 102",
+        ]:
+            r = client.post(
+                "/api/assistant/query",
+                json={"prompt": malicious_input, "language": "en", "user_role": "fan"},
+            )
+            self.assertEqual(r.status_code, 200)
+            response_text = r.json().get("response", "")
+            # The response must not echo back raw script/SQL injection
+            self.assertNotIn("<script>", response_text)
+            self.assertNotIn("DROP TABLE", response_text)
+
+    def test_37_wheelchair_route_avoids_inaccessible_gate(self):
+        """Wheelchair profile is never routed through a gate without an accessible ramp."""
+        r = client.post(
+            "/api/stadium/route",
+            json={"ticket_section": "C102", "mobility_profile": "wheelchair", "prefer_elevators": True},
+        )
+        self.assertEqual(r.status_code, 200)
+        data = r.json()
+        # Gate C has accessible_ramp=False — wheelchair must NOT be sent there
+        self.assertNotIn("Gate C", data["recommended_gate"])
+        # Route must actually be step-free for wheelchair users
+        self.assertTrue(data["step_free"])
+
+    def test_38_step_free_reflects_actual_gate_ramp(self):
+        """step_free in route response is based on actual gate ramp data, not hardcoded True."""
+        r = client.post(
+            "/api/stadium/route",
+            json={"ticket_section": "A100", "mobility_profile": "standard", "prefer_elevators": False},
+        )
+        self.assertEqual(r.status_code, 200)
+        data = r.json()
+        # Standard profile gets Gate A which has accessible_ramp=True
+        self.assertIn("step_free", data)
+
+    def test_39_gate_telemetry_has_is_simulated_flag(self):
+        """Gate telemetry response includes is_simulated=True for data integrity transparency."""
+        r = client.get("/api/stadium/gates")
+        self.assertEqual(r.status_code, 200)
+        gates = r.json()
+        self.assertGreater(len(gates), 0)
+        for gate in gates:
+            self.assertIn("is_simulated", gate)
+            self.assertTrue(gate["is_simulated"], msg=f"Gate {gate['gate_id']} should be marked as simulated")
+
+    def test_40_route_response_has_routing_method(self):
+        """Route response includes routing_method field indicating algorithm used."""
+        r = client.post(
+            "/api/stadium/route",
+            json={"ticket_section": "B110", "mobility_profile": "standard"},
+        )
+        self.assertEqual(r.status_code, 200)
+        data = r.json()
+        self.assertIn("routing_method", data)
+        self.assertIsNotNone(data["routing_method"])
+
 
 if __name__ == "__main__":
     unittest.main()

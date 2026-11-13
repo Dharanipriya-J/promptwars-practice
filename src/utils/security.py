@@ -34,7 +34,7 @@ def apply_security_headers(response: Response) -> Response:
         "default-src 'self'; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "script-src 'self' 'unsafe-inline' https://unpkg.com; "
+        "script-src 'self' https://unpkg.com; "
         "img-src 'self' data: https://images.unsplash.com; "
         "connect-src 'self' http://localhost:8000 https://generativelanguage.googleapis.com;"
     )
@@ -59,14 +59,23 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if request.url.path in ["/api/health", "/docs", "/openapi.json", "/"]:
             return await call_next(request)
 
-        # Extract client IP from proxy header if available
-        forwarded_for = request.headers.get("X-Forwarded-For", "")
-        if forwarded_for:
-            client_ip = forwarded_for.split(",")[0].strip()
-        elif request.client and request.client.host:
-            client_ip = request.client.host
+        # Extract client IP — only trust X-Forwarded-For in production (behind a known proxy).
+        # In development, spoofed headers would bypass rate limiting, so we use the direct
+        # connection IP. This prevents clients from sending arbitrary X-Forwarded-For values
+        # to whitelist themselves.
+        if settings.environment == "production":
+            forwarded_for = request.headers.get("X-Forwarded-For", "")
+            # Cloud Run / GCP always appends the real client IP as the LAST entry.
+            # Take the last entry to defeat spoofed prepended values.
+            if forwarded_for:
+                client_ip = forwarded_for.split(",")[-1].strip()
+            elif request.client and request.client.host:
+                client_ip = request.client.host
+            else:
+                client_ip = "127.0.0.1"
         else:
-            client_ip = "127.0.0.1"
+            # Development: always use direct TCP connection IP, ignore forwarded headers.
+            client_ip = request.client.host if request.client and request.client.host else "127.0.0.1"
 
         now = time.monotonic()
         timestamps = _CLIENT_REQUESTS[client_ip]
@@ -105,8 +114,8 @@ def verify_staff_token(request: Request) -> bool:
 
     if not configured_token:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Staff authentication configuration is missing on server.",
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Incident dispatch unavailable — STAFF_SECRET_TOKEN not configured. Contact the administrator.",
         )
 
     if not token or not hmac.compare_digest(token, configured_token):
