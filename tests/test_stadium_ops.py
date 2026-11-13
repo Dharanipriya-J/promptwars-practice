@@ -451,6 +451,49 @@ class TestPitchPulseSuite(unittest.TestCase):
         self.assertIn("routing_method", data)
         self.assertIsNotNone(data["routing_method"])
 
+    def test_41_incidents_persistence_and_status_tracking(self):
+        """Submitted incident is persisted in the incident store and retrievable via GET /incidents."""
+        r = client.post(
+            "/api/stadium/incident",
+            headers=STAFF_HEADERS,
+            json={
+                "zone": "Gate B",
+                "incident_type": "accessibility_assist",
+                "priority": "high",
+                "description": "Wheelchair escort requested at east entrance turnstile",
+                "reporter_role": "venue_staff",
+            },
+        )
+        self.assertEqual(r.status_code, 200)
+        incident_id = r.json()["incident_id"]
+
+        # Fetch incidents registry
+        r_list = client.get("/api/stadium/incidents", headers=STAFF_HEADERS)
+        self.assertEqual(r_list.status_code, 200)
+        incidents = r_list.json()["incidents"]
+        matching = [inc for inc in incidents if inc["incident_id"] == incident_id]
+        self.assertEqual(len(matching), 1)
+        self.assertEqual(matching[0]["status"], "dispatched")
+        self.assertIn("Rapid Accessibility Unit", matching[0]["assigned_team"])
+
+    def test_42_dijkstra_graph_routing_all_segments_verified(self):
+        """Dijkstra algorithm validates all route segments for step-free access and elevator compliance."""
+        from src.utils.routing import stadium_graph
+        route = stadium_graph.find_accessible_route("Sec 210", mobility_profile="wheelchair", prefer_elevators=True)
+        self.assertTrue(route.step_free)
+        self.assertTrue(route.all_segments_verified)
+        self.assertEqual(route.routing_method, "dijkstra_graph_verified")
+        self.assertIn("Gate B", route.recommended_gate)
+        # Verify instructions mention elevator for mezzanine level
+        self.assertTrue(any("Elevator" in step for step in route.accessible_path))
+
+    def test_43_dijkstra_sensory_sensitive_route(self):
+        """Sensory sensitive fans are guided away from high-noise gates directly to quiet suite."""
+        from src.utils.routing import stadium_graph
+        route = stadium_graph.find_accessible_route("Sec 104", mobility_profile="sensory_sensitive")
+        self.assertIn("Gate B", route.recommended_gate)
+        self.assertIn("Quiet Suite", route.nearest_quiet_room)
+
 
 if __name__ == "__main__":
     unittest.main()

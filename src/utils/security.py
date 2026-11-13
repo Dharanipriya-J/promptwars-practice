@@ -34,7 +34,7 @@ def apply_security_headers(response: Response) -> Response:
         "default-src 'self'; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "script-src 'self' https://unpkg.com; "
+        "script-src 'self' https://unpkg.com https://cdn.tailwindcss.com; "
         "img-src 'self' data: https://images.unsplash.com; "
         "connect-src 'self' http://localhost:8000 https://generativelanguage.googleapis.com;"
     )

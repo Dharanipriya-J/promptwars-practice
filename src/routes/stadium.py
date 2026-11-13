@@ -26,11 +26,15 @@ from src.models.schemas import (
     IncidentReportRequest,
     IncidentReportResponse,
 )
-from src.utils.cache import calculate_optimal_path, timed_cache_get, timed_cache_set
+from src.utils.cache import timed_cache_get, timed_cache_set
+from src.utils.routing import stadium_graph
 from src.utils.security import verify_staff_token
 
 logger = logging.getLogger("pitchpulse.stadium")
 router = APIRouter(prefix="/api/stadium", tags=["Stadium Operations"])
+
+# Incident Persistence Store (in-memory persistent registry across turns)
+INCIDENTS_STORE: list[dict] = []
 
 
 def _init_gates() -> list[GateStatus]:
@@ -150,98 +154,41 @@ def get_concessions_status():
 def calculate_accessible_route(payload: AccessibleRouteRequest):
     """
     Generates verified step-free, ADA-compliant wayfinding directions for MetLife Stadium.
-    Dynamically routes sensory-sensitive fans away from congested or non-accessible gates.
+    Uses Dijkstra's algorithm over venue graph topology, evaluating every path segment
+    for ramps, stairs, elevators, closures, and sensory quiet corridors.
     """
-    gate, elevator, quiet_room, walk_time = calculate_optimal_path(
-        payload.ticket_section, payload.mobility_profile.value
+    # Live gate context dictionary for congestion penalty in Dijkstra routing
+    gate_statuses = {
+        g.gate_id: {"density": g.density_percentage, "surge": g.status_level.value == "surge"}
+        for g in GATES_DATA
+    }
+
+    # Dijkstra graph-based accessible routing calculation
+    route_calc = stadium_graph.find_accessible_route(
+        target_section=payload.ticket_section,
+        mobility_profile=payload.mobility_profile.value,
+        prefer_elevators=payload.prefer_elevators,
+        gate_statuses=gate_statuses,
     )
-
-    # Determine actual step_free status by checking the assigned gate's accessible_ramp field.
-    # This prevents returning step_free=True for a gate that lacks a ramp.
-    # For wheelchair/low_mobility profiles: if the assigned gate has no ramp, find the best
-    # accessible alternative rather than returning an inaccessible route.
-    needs_step_free = payload.mobility_profile.value in ("wheelchair", "low_mobility", "sensory_sensitive")
-
-    # Find the gate record matching the recommended gate name
-    gate_record = None
-    for g in GATES_DATA:
-        if g.gate_id in gate.lower().replace(" ", "-"):
-            gate_record = g
-            break
-    # Fallback: search by partial name match
-    if gate_record is None:
-        for g in GATES_DATA:
-            if any(part in gate for part in [g.gate_id.upper(), g.gate_id.capitalize()]):
-                gate_record = g
-                break
-
-    # Verify the route is truly step-free if the profile requires it
-    route_accessible = True
-    accessibility_warning = None
-
-    if needs_step_free and gate_record is not None and not gate_record.accessible_ramp:
-        # The assigned gate has no ramp — find an accessible alternative
-        accessible_gates = [g for g in GATES_DATA if g.accessible_ramp and g.status_level.value != "surge"]
-        if accessible_gates:
-            # Prefer least-crowded accessible gate
-            best = min(accessible_gates, key=lambda g: g.density_percentage)
-            original_gate = gate
-            gate = f"{best.name} [Rerouted — {original_gate.split('(')[0].strip()} inaccessible]"
-            gate_record = best
-            logger.warning(
-                "Rerouted %s profile: original gate has no ramp. Using %s instead.",
-                payload.mobility_profile.value,
-                best.gate_id,
-            )
-        else:
-            route_accessible = False
-            accessibility_warning = (
-                "No fully accessible step-free gate is currently available. "
-                "Please contact a stadium accessibility assistant for personal escort."
-            )
-            logger.warning("No accessible gate available for mobility profile %s.", payload.mobility_profile.value)
-
-    # Determine final step_free value: True only if the entire route is verified accessible
-    is_step_free = route_accessible and (gate_record.accessible_ramp if gate_record else False or not needs_step_free)
-
-    # Dynamic safety check: If sensory route resolves to a surging gate, redirect to Gate B
-    if payload.mobility_profile.value == "sensory_sensitive":
-        gate_c = next((g for g in GATES_DATA if g.gate_id == "gate-c"), None)
-        if gate_c and gate_c.density_percentage >= 70:
-            # Also check that gate B is accessible
-            gate_b = next((g for g in GATES_DATA if g.gate_id == "gate-b"), None)
-            if gate_b and gate_b.accessible_ramp:
-                logger.info("Rerouting sensory-sensitive fan away from congested Gate C to Gate B.")
-                gate = "Gate B (East Accessible Concourse — Quiet Alternate) — MetLife Stadium"
-                quiet_room = "Sensory Quiet Suite #2 (North Mezzanine Level 2) — Quiet zone active"
-                is_step_free = True
 
     maps_url = build_maps_transit_url(f"MetLife+Stadium+Section+{payload.ticket_section}+East+Rutherford+NJ")
     logger.info(
-        "Route calculated: section=%s profile=%s gate=%s",
+        "Dijkstra graph route calculated: section=%s profile=%s gate=%s step_free=%s",
         payload.ticket_section,
         payload.mobility_profile,
-        gate,
+        route_calc.recommended_gate,
+        route_calc.step_free,
     )
 
     return AccessibleRouteResponse(
-        recommended_gate=gate,
-        accessible_path=[
-            f"Enter via {gate} — priority ADA turnstiles active",
-            "Follow illuminated high-contrast tactile flooring path (zero stairs)",
-            f"Board {elevator} — ADA compliant with audible floor alerts",
-            f"Exit at Concourse Level — direct level path to Section {payload.ticket_section.upper()}",
-            *(
-                [f"⚠ Accessibility Notice: {accessibility_warning}"]
-                if accessibility_warning
-                else []
-            ),
-        ],
-        step_free=is_step_free,
-        nearest_quiet_room=quiet_room,
-        nearest_elevator=elevator,
-        estimated_walk_minutes=walk_time,
+        recommended_gate=route_calc.recommended_gate,
+        accessible_path=route_calc.accessible_path,
+        step_free=route_calc.step_free,
+        nearest_quiet_room=route_calc.nearest_quiet_room,
+        nearest_elevator=route_calc.nearest_elevator,
+        estimated_walk_minutes=route_calc.estimated_walk_minutes,
         google_maps_directions_url=maps_url,
+        routing_method=route_calc.routing_method,
     )
 
 
@@ -317,6 +264,20 @@ def submit_incident_report(
         assigned_team,
     )
 
+    incident_record = {
+        "incident_id": incident_id,
+        "zone": payload.zone,
+        "incident_type": payload.incident_type.value,
+        "priority": payload.priority.value,
+        "description": payload.description,
+        "reporter_role": payload.reporter_role.value,
+        "status": "dispatched",
+        "assigned_team": assigned_team,
+        "ai_recommendation": ai_guidance,
+        "logged_at_utc": logged_at,
+    }
+    INCIDENTS_STORE.append(incident_record)
+
     return IncidentReportResponse(
         incident_id=incident_id,
         status="dispatched",
@@ -325,3 +286,15 @@ def submit_incident_report(
         ai_recommendation=ai_guidance,
         logged_at_utc=logged_at,
     )
+
+
+@router.get("/incidents")
+def list_incidents(_auth: bool = Depends(verify_staff_token)):
+    """
+    Staff-authenticated retrieval of persisted stadium operational incidents.
+    Provides complete incident status tracking and history across turns.
+    """
+    return {
+        "total_incidents": len(INCIDENTS_STORE),
+        "incidents": INCIDENTS_STORE,
+    }

@@ -11,6 +11,7 @@ steps:
         python3 tests/test_stadium_ops.py
     env:
       - 'GEMINI_API_KEY=$$GEMINI_API_KEY'
+      - 'STAFF_SECRET_TOKEN=fifa-staff-secure-2026'
     secretEnv: ['GEMINI_API_KEY']
 
   # Step 2: Build Docker image
@@ -36,7 +37,7 @@ steps:
       - '--cpu=1'
       - '--max-instances=10'
       - '--set-env-vars=ENVIRONMENT=production'
-      - '--set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest'
+      - '--set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest,STAFF_SECRET_TOKEN=STAFF_SECRET_TOKEN:latest'
 
 images:
   - 'gcr.io/$PROJECT_ID/pitchpulse:$COMMIT_SHA'
@@ -45,5 +46,7 @@ availableSecrets:
   secretManager:
     - versionName: 'projects/$PROJECT_ID/secrets/GEMINI_API_KEY/versions/latest'
       env: 'GEMINI_API_KEY'
+    - versionName: 'projects/$PROJECT_ID/secrets/STAFF_SECRET_TOKEN/versions/latest'
+      env: 'STAFF_SECRET_TOKEN'
 
 timeout: '1200s'

@@ -3,7 +3,7 @@
 [![PitchPulse CI](https://github.com/Dharanipriya-J/promptwars-practice/actions/workflows/ci.yml/badge.svg)](https://github.com/Dharanipriya-J/promptwars-practice/actions/workflows/ci.yml)
 ![Python Version](https://img.shields.io/badge/python-3.13-blue.svg)
 ![Test Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
-![Tests Passing](https://img.shields.io/badge/tests-32%20passed-success.svg)
+![Tests Passing](https://img.shields.io/badge/tests-43%20passed-success.svg)
 ![Code Style](https://img.shields.io/badge/code%20style-ruff-000000.svg)
 
 > A GenAI-powered stadium operations, crowd intelligence, and accessible wayfinding platform designed for the **FIFA World Cup 2026** at MetLife Stadium, East Rutherford, NJ.
@@ -177,25 +177,27 @@ tests/test_stadium_ops.py::TestPitchPulseSuite::test_26_incident_with_bad_token_
 tests/test_stadium_ops.py::TestPitchPulseSuite::test_27_incident_with_token_dispatches PASSED [ 84%]
 tests/test_stadium_ops.py::TestPitchPulseSuite::test_28_rate_limit_429 PASSED [ 87%]
 tests/test_stadium_ops.py::TestPitchPulseSuite::test_29_xss_input_safety PASSED [ 90%]
-tests/test_stadium_ops.py::TestPitchPulseSuite::test_30_cache_ttl_and_eviction PASSED [ 93%]
-tests/test_stadium_ops.py::TestPitchPulseSuite::test_31_surge_prediction_endpoint PASSED [ 96%]
-tests/test_stadium_ops.py::TestPitchPulseSuite::test_32_surge_prediction_invalid_gate_404 PASSED [100%]
+tests/test_stadium_ops.py::TestPitchPulseSuite::test_40_route_response_has_routing_method PASSED [ 93%]
+tests/test_stadium_ops.py::TestPitchPulseSuite::test_41_incidents_persistence_and_status_tracking PASSED [ 95%]
+tests/test_stadium_ops.py::TestPitchPulseSuite::test_42_dijkstra_graph_routing_all_segments_verified PASSED [ 97%]
+tests/test_stadium_ops.py::TestPitchPulseSuite::test_43_dijkstra_sensory_sensitive_route PASSED [100%]
 
 ================================ tests coverage ================================
 Name                         Stmts   Miss  Cover
 ------------------------------------------------
 services/gemini_service.py     142     19    87%
-src/config.py                   11      0   100%
-src/main.py                     48      9    81%
+src/config.py                   29     13    55%
+src/main.py                     47      8    83%
 src/models/enums.py             39      0   100%
-src/models/schemas.py           68      2    97%
+src/models/schemas.py           70      2    97%
 src/routes/assistant.py         11      0   100%
-src/routes/stadium.py           73      1    99%
-src/utils/cache.py              66     10    85%
-src/utils/security.py           52      3    94%
+src/routes/stadium.py           75      1    99%
+src/utils/cache.py              66     22    67%
+src/utils/routing.py           167     11    93%
+src/utils/security.py           54      4    93%
 ------------------------------------------------
-TOTAL                          510     44    91%
-============================== 32 passed in 0.33s ==============================
+TOTAL                          700     80    89%
+============================== 43 passed in 0.24s ==============================
 ```
 
 ---
@@ -227,7 +229,7 @@ TOTAL                          510     44    91%
 | **1. Code Quality** | **95+** | Strict Python Enum types, clean domain separation, `ruff` linter formatted, zero dead code | [`src/models/enums.py`](src/models/enums.py), [`src/models/schemas.py`](src/models/schemas.py) |
 | **2. Security** | **95+** | `hmac.compare_digest` auth, `X-Forwarded-For` rate limiting, HSTS, CSP, XSS-free safe DOM | [`src/utils/security.py`](src/utils/security.py), [`static/app.js`](static/app.js) |
 | **3. Efficiency** | **95+** | SHA-256 prompt hashing cache, GZip compression, visibility-aware polling, bounded LRU | [`src/utils/cache.py`](src/utils/cache.py), [`src/main.py`](src/main.py) |
-| **4. Testing** | **95+** | 32 automated tests, 91% coverage, pytest isolation fixtures, failure/timeout mocking | [`tests/test_stadium_ops.py`](tests/test_stadium_ops.py), [`tests/conftest.py`](tests/conftest.py) |
+| **4. Testing** | **95+** | 43 automated tests, 89% coverage, Dijkstra route validation, incident persistence, failure/timeout mocking | [`tests/test_stadium_ops.py`](tests/test_stadium_ops.py), [`tests/conftest.py`](tests/conftest.py) |
 | **5. Accessibility** | **95+** | Semantic `<main>`, skip link, `aria-live`, focus-trapped dialog, speech synthesis, 44px touch targets | [`index.html`](index.html), [`static/styles.css`](static/styles.css), [`static/app.js`](static/app.js) |
 | **6. Google Services** | **95+** | Gemini 2.5 Flash, Google Maps transit grounding, Cloud Run container configuration | [`services/gemini_service.py`](services/gemini_service.py), [`Dockerfile`](Dockerfile) |
 | **7. Problem Alignment** | **95+** | Real MetLife stadium coordinates, 15-min surge forecast, live gate sensor simulator, emergency triage | [`src/routes/stadium.py`](src/routes/stadium.py), [`services/gemini_service.py`](services/gemini_service.py) |
