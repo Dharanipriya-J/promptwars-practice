@@ -77,10 +77,10 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
 # Cross-Origin Resource Sharing with strict origin configuration
-allowed_origin = settings.allowed_origin or "http://localhost:8000"
+allowed_origin = settings.allowed_origin or "*"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[allowed_origin, "http://localhost:8000", "http://127.0.0.1:8000"],
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "X-Staff-Token", "X-Forwarded-For"],

@@ -16,7 +16,7 @@ MIN_TOKEN_LENGTH = 16
 class Settings(BaseSettings):
     gemini_api_key: str | None = None
     staff_secret_token: str = ""
-    allowed_origin: str = "http://localhost:8000"
+    allowed_origin: str = "*"
     environment: str = "development"
     log_level: str = "INFO"
     host: str = "0.0.0.0"
