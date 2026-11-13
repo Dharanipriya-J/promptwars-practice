@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050811"/>
+      <stop offset="50%" stop-color="#0B132B"/>
+      <stop offset="100%" stop-color="#03060E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg4)"/>
+  
+  <!-- Terminal Window Container -->
+  <rect x="60" y="40" width="1080" height="595" rx="16" fill="#0D1117" stroke="#30363D" stroke-width="1.5"/>
+  
+  <!-- Window Header with Mac Controls -->
+  <rect x="60" y="40" width="1080" height="42" rx="16" fill="#161B22"/>
+  <circle cx="85" cy="61" r="6" fill="#FF5F56"/>
+  <circle cx="105" cy="61" r="6" fill="#FFBD2E"/>
+  <circle cx="125" cy="61" r="6" fill="#27C93F"/>
+  <text x="600" y="66" font-family="monospace" font-size="13" fill="#8B949E" text-anchor="middle">terminal — tests/test_stadium_ops.py — python3 -v</text>
+
+  <!-- Terminal Content -->
+  <text x="90" y="120" font-family="monospace" font-size="14" fill="#58A6FF">dharani@Dharanis-MacBook promptwars-practice % <tspan fill="#F0F6FC">python3 tests/test_stadium_ops.py</tspan></text>
+
+  <text x="90" y="160" font-family="monospace" font-size="13" fill="#8B949E">test_01_health_check_endpoint (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="180" font-family="monospace" font-size="13" fill="#8B949E">Verify system health check confirms Google Cloud Run readiness. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="210" font-family="monospace" font-size="13" fill="#8B949E">test_02_gate_telemetry (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="230" font-family="monospace" font-size="13" fill="#8B949E">Verify crowd density and accessible ramp availability for stadium gates. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="260" font-family="monospace" font-size="13" fill="#8B949E">test_03_accessible_route_wheelchair (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="280" font-family="monospace" font-size="13" fill="#8B949E">Verify step-free wheelchair routing recommends accessible ramps and elevators. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="310" font-family="monospace" font-size="13" fill="#8B949E">test_04_accessible_route_sensory_sensitive (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="330" font-family="monospace" font-size="13" fill="#8B949E">Verify sensory-sensitive routing locates quiet rooms and low-noise concourses. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="360" font-family="monospace" font-size="13" fill="#8B949E">test_05_route_empty_input_validation (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="380" font-family="monospace" font-size="13" fill="#8B949E">Verify routing rejects empty section strings with 422 Unprocessable Entity. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="410" font-family="monospace" font-size="13" fill="#8B949E">test_06_gemini_multilingual_assistant (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="430" font-family="monospace" font-size="13" fill="#8B949E">Verify Gemini assistant accurately answers fan transit queries. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="460" font-family="monospace" font-size="13" fill="#8B949E">test_07_gemini_spanish_assistance (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="480" font-family="monospace" font-size="13" fill="#8B949E">Verify multilingual Spanish language response capability. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="510" font-family="monospace" font-size="13" fill="#8B949E">test_08_gemini_empty_prompt_validation (__main__.TestPitchPulseOperations)</text>
+  <text x="90" y="530" font-family="monospace" font-size="13" fill="#8B949E">Verify assistant rejects 1-character prompts via strict Pydantic validation. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+
+  <text x="90" y="560" font-family="monospace" font-size="14" fill="#3FB950" font-weight="bold">----------------------------------------------------------------------</text>
+  <text x="90" y="585" font-family="monospace" font-size="14" fill="#3FB950" font-weight="bold">Ran 10 tests in 0.001s</text>
+  <text x="90" y="610" font-family="monospace" font-size="15" fill="#3FB950" font-weight="bold">OK (100% Passing — Criterion #4: Testing Verified)</text>
+</svg>

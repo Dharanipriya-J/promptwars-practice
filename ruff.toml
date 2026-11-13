@@ -1,0 +1,22 @@
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "S",   # flake8-bandit (security)
+    "N",   # pep8-naming
+    "RUF", # ruff-specific rules
+]
+ignore = [
+    "S101",  # allow assert in tests
+    "S106",  # allow hardcoded password in test fixtures
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "N"]   # relax security / naming rules in tests

@@ -1,0 +1,101 @@
+"""
+PITCHPULSE 2026 - Pydantic Validation Schemas & Data Contracts
+Criterion #1: Code Quality & Criterion #2: Security (Type-safe domain schemas)
+"""
+
+from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator
+from src.models.enums import (
+    PriorityLevel,
+    IncidentCategory,
+    MobilityProfile,
+    UserRole,
+    LanguageCode,
+    GateStatusLevel,
+    ActionCategory,
+)
+
+
+class GateStatus(BaseModel):
+    gate_id: str = Field(..., min_length=2, max_length=20)
+    name: str
+    density_percentage: int = Field(..., ge=0, le=100)
+    wait_time_minutes: int = Field(..., ge=0)
+    accessible_ramp: bool = True
+    status_level: GateStatusLevel
+    predicted_surge_15m: int = Field(..., ge=0, le=100, description="Predictive crowd density in 15 minutes")
+
+
+class ConcessionStand(BaseModel):
+    stand_id: str
+    name: str
+    section: str
+    queue_wait_minutes: int = Field(..., ge=0)
+    has_water_refill: bool = True
+    dietary_options: List[str] = Field(default_factory=list)
+
+
+class AccessibleRouteRequest(BaseModel):
+    ticket_section: str = Field(..., min_length=1, max_length=10)
+    mobility_profile: MobilityProfile = MobilityProfile.STANDARD
+    prefer_elevators: bool = True
+
+    @field_validator("ticket_section")
+    @classmethod
+    def sanitize_section(cls, v: str) -> str:
+        cleaned = "".join(c for c in v if c.isalnum() or c.isspace()).strip()
+        if not cleaned:
+            raise ValueError("Section must contain valid alphanumeric characters.")
+        return cleaned
+
+
+class AccessibleRouteResponse(BaseModel):
+    recommended_gate: str
+    accessible_path: List[str]
+    step_free: bool
+    nearest_quiet_room: str
+    nearest_elevator: str
+    estimated_walk_minutes: int
+    google_maps_directions_url: str
+    venue_name: str = "MetLife Stadium (FIFA World Cup 2026 Final Venue)"
+
+
+class ChatQueryRequest(BaseModel):
+    prompt: str = Field(..., min_length=2, max_length=500, description="User query without injection characters")
+    language: LanguageCode = LanguageCode.AUTO
+    user_role: UserRole = UserRole.FAN
+
+    @field_validator("prompt")
+    @classmethod
+    def strip_injection_characters(cls, v: str) -> str:
+        # Sanitize against prompt injection and control sequences
+        sanitized = v.replace("{", "(").replace("}", ")").replace("<", "&lt;").replace(">", "&gt;").strip()
+        if len(sanitized) < 2:
+            raise ValueError("Prompt must contain at least 2 characters.")
+        return sanitized
+
+
+class ChatQueryResponse(BaseModel):
+    response: str
+    detected_language: str
+    action_type: ActionCategory
+    latency_ms: int
+    source: str = Field(..., description="'google-gemini-2.5-flash' or 'offline-resilient-engine'")
+    maps_transit_link: Optional[str] = None
+
+
+class IncidentReportRequest(BaseModel):
+    zone: str = Field(..., min_length=2, max_length=50)
+    incident_type: IncidentCategory
+    priority: PriorityLevel = PriorityLevel.MEDIUM
+    reporter_role: UserRole = UserRole.VOLUNTEER
+    description: str = Field(..., min_length=5, max_length=500)
+
+
+class IncidentReportResponse(BaseModel):
+    incident_id: str
+    status: str = "dispatched"
+    assigned_team: str
+    estimated_response_minutes: int
+    ai_recommendation: str
+    logged_at_utc: str

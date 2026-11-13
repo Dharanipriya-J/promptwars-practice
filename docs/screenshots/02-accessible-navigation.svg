@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080C14"/>
+      <stop offset="50%" stop-color="#0E1726"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD200"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg2)"/>
+  
+  <!-- Section Title -->
+  <rect x="40" y="30" width="1120" height="70" rx="16" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="70" y="72" font-family="system-ui, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF">♿ ACCESSIBLE WAYFINDING // <tspan fill="#FFD200">Step-Free Route Navigator</tspan></text>
+  <rect x="920" y="48" width="210" height="34" rx="17" fill="#FFD200" fill-opacity="0.12" stroke="#FFD200" stroke-width="1"/>
+  <text x="1025" y="70" font-family="system-ui, sans-serif" font-weight="800" font-size="12" fill="#FFD200" text-anchor="middle">WCAG 2.1 AA COMPLIANT</text>
+
+  <!-- Left Form Column: Accessibility Profile Selector -->
+  <rect x="40" y="125" width="450" height="515" rx="20" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="70" y="170" font-family="system-ui, sans-serif" font-weight="800" font-size="18" fill="#FFFFFF">Select Mobility Profile</text>
+  <text x="70" y="195" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Tailors wayfinding to step-free ramps, elevators & quiet zones</text>
+
+  <!-- Profile Option 1: Wheelchair Selected -->
+  <rect x="70" y="220" width="390" height="70" rx="14" fill="#0A101E" stroke="#00FF87" stroke-width="2"/>
+  <text x="95" y="255" font-family="system-ui, sans-serif" font-weight="800" font-size="15" fill="#00FF87">♿ Wheelchair / Step-Free Access</text>
+  <text x="95" y="275" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Prioritizes 1:12 slope ramps and Elevator Towers</text>
+
+  <!-- Profile Option 2: Low Mobility -->
+  <rect x="70" y="305" width="390" height="70" rx="14" fill="#1A243B" stroke="#1E293B" stroke-width="1"/>
+  <text x="95" y="340" font-family="system-ui, sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">🦽 Reduced Walking / Handrails</text>
+  <text x="95" y="360" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Shortest walking distance with rest benches</text>
+
+  <!-- Profile Option 3: Sensory Sensitive -->
+  <rect x="70" y="390" width="390" height="70" rx="14" fill="#1A243B" stroke="#1E293B" stroke-width="1"/>
+  <text x="95" y="425" font-family="system-ui, sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">🎧 Sensory Sensitive / Autism Friendly</text>
+  <text x="95" y="445" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Routes through low-decibel corridors with quiet suites</text>
+
+  <!-- Ticket Input -->
+  <text x="70" y="495" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#E2E8F0">Ticket Section Code:</text>
+  <rect x="70" y="510" width="390" height="50" rx="10" fill="#0A101E" stroke="#334155" stroke-width="1"/>
+  <text x="95" y="542" font-family="system-ui, sans-serif" font-weight="800" font-size="16" fill="#FFD200">Section 104 - Row G</text>
+
+  <rect x="70" y="575" width="390" height="45" rx="12" fill="url(#yellowGrad)"/>
+  <text x="265" y="603" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#080C14" text-anchor="middle">Generate Accessible Route</text>
+
+  <!-- Right Route Results Column -->
+  <rect x="520" y="125" width="640" height="515" rx="20" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="550" y="170" font-family="system-ui, sans-serif" font-weight="800" font-size="18" fill="#FFFFFF">Optimal Step-Free Route Directions</text>
+
+  <!-- Step 1 -->
+  <circle cx="570" cy="225" r="16" fill="#00FF87"/>
+  <text x="570" y="231" font-family="system-ui, sans-serif" font-weight="900" font-size="13" fill="#080C14" text-anchor="middle">1</text>
+  <text x="605" y="222" font-family="system-ui, sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">Enter via Gate B (East Accessible Boulevard)</text>
+  <text x="605" y="242" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Dedicated ADA turnstiles with zero wait time (2 mins).</text>
+
+  <!-- Connector Line -->
+  <line x1="570" y1="245" x2="570" y2="295" stroke="#334155" stroke-width="3" stroke-dasharray="4"/>
+
+  <!-- Step 2 -->
+  <circle cx="570" cy="315" r="16" fill="#00FF87"/>
+  <text x="570" y="321" font-family="system-ui, sans-serif" font-weight="900" font-size="13" fill="#080C14" text-anchor="middle">2</text>
+  <text x="605" y="312" font-family="system-ui, sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">Follow Green Accessible High-Contrast Tactile Path</text>
+  <text x="605" y="332" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Smooth terrazzo flooring; no elevation changes.</text>
+
+  <!-- Connector Line -->
+  <line x1="570" y1="335" x2="570" y2="385" stroke="#334155" stroke-width="3" stroke-dasharray="4"/>
+
+  <!-- Step 3 -->
+  <circle cx="570" cy="405" r="16" fill="#00FF87"/>
+  <text x="570" y="411" font-family="system-ui, sans-serif" font-weight="900" font-size="13" fill="#080C14" text-anchor="middle">3</text>
+  <text x="605" y="402" font-family="system-ui, sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">Board Elevator Tower 2 (North Concourse)</text>
+  <text x="605" y="422" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Level 1 direct exit to Section 104 ADA viewing platform.</text>
+
+  <!-- Amenity Cards Bottom -->
+  <rect x="550" y="465" width="280" height="145" rx="14" fill="#0A101E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="570" y="495" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#FFD200">🎧 SENSORY QUIET SUITE #2</text>
+  <text x="570" y="520" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">Location: Level 2 East Mezzanine</text>
+  <text x="570" y="540" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Equipped with noise-cancelling</text>
+  <text x="570" y="560" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">headsets & weighted blankets.</text>
+  <text x="570" y="590" font-family="system-ui, sans-serif" font-weight="700" font-size="12" fill="#00FF87">Distance: 45 meters</text>
+
+  <rect x="850" y="465" width="280" height="145" rx="14" fill="#0A101E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="870" y="495" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#38BDF8">🚰 HYDRATION & REFILL</text>
+  <text x="870" y="520" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">Eco-Station #4 (Sec 108)</text>
+  <text x="870" y="540" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Free chilled filtered water refill</text>
+  <text x="870" y="560" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">stations for reusable bottles.</text>
+  <text x="870" y="590" font-family="system-ui, sans-serif" font-weight="700" font-size="12" fill="#00FF87">Wait time: 0 mins</text>
+</svg>

@@ -1,0 +1,70 @@
+name: PitchPulse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run Tests (Python 3.13)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run test suite (24 tests)
+        env:
+          # Tests use mocked Gemini — no real key needed in CI
+          GEMINI_API_KEY: "ci-mock-key-not-used"
+          STAFF_SECRET_TOKEN: "fifa-staff-secure-2026"
+        run: python3 tests/test_stadium_ops.py -v
+
+  lint:
+    name: Lint with Ruff
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Run ruff check
+        run: ruff check src/ services/ tests/
+
+  security:
+    name: Dependency vulnerability scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Audit dependencies for known CVEs
+        run: pip-audit -r requirements.txt --desc on

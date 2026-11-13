@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080C14"/>
+      <stop offset="50%" stop-color="#111B30"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg3)"/>
+  
+  <!-- Header Bar -->
+  <rect x="40" y="30" width="1120" height="70" rx="16" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="70" y="72" font-family="system-ui, sans-serif" font-weight="900" font-size="22" fill="#FFFFFF">🤖 GOOGLE GEMINI 2.5 FLASH // <tspan fill="#38BDF8">Multilingual Fan Concierge</tspan></text>
+  <rect x="910" y="48" width="220" height="34" rx="17" fill="#38BDF8" fill-opacity="0.12" stroke="#38BDF8" stroke-width="1"/>
+  <text x="1020" y="70" font-family="system-ui, sans-serif" font-weight="800" font-size="12" fill="#38BDF8" text-anchor="middle">OFFICIAL GOOGLE GENAI SDK</text>
+
+  <!-- Left: Language & Mode Selection -->
+  <rect x="40" y="125" width="380" height="515" rx="20" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+  <text x="70" y="170" font-family="system-ui, sans-serif" font-weight="800" font-size="18" fill="#FFFFFF">Multilingual Engine</text>
+  <text x="70" y="195" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Live semantic translation &amp; intent triage</text>
+
+  <!-- Language Pills -->
+  <rect x="70" y="225" width="95" height="40" rx="10" fill="#00FF87" fill-opacity="0.2" stroke="#00FF87" stroke-width="1.5"/>
+  <text x="117" y="250" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#00FF87" text-anchor="middle">🇺🇸 English</text>
+
+  <rect x="175" y="225" width="95" height="40" rx="10" fill="#1A243B" stroke="#334155" stroke-width="1"/>
+  <text x="222" y="250" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#E2E8F0" text-anchor="middle">🇲🇽 Español</text>
+
+  <rect x="280" y="225" width="95" height="40" rx="10" fill="#1A243B" stroke="#334155" stroke-width="1"/>
+  <text x="327" y="250" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#E2E8F0" text-anchor="middle">🇫🇷 Français</text>
+
+  <!-- Sample Query Prompts -->
+  <text x="70" y="305" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#E2E8F0">Sample Operational Prompts:</text>
+
+  <rect x="70" y="325" width="320" height="55" rx="10" fill="#0A101E" stroke="#1E293B" stroke-width="1"/>
+  <text x="85" y="348" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#FFD200">TRANSIT &amp; EGRESS</text>
+  <text x="85" y="368" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">"How do I take the Metro to avoid Gate C crowds?"</text>
+
+  <rect x="70" y="395" width="320" height="55" rx="10" fill="#0A101E" stroke="#1E293B" stroke-width="1"/>
+  <text x="85" y="418" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#00FF87">ACCESSIBILITY</text>
+  <text x="85" y="438" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">"Where is the quiet sensory suite near Section 104?"</text>
+
+  <rect x="70" y="465" width="320" height="55" rx="10" fill="#0A101E" stroke="#1E293B" stroke-width="1"/>
+  <text x="85" y="488" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#38BDF8">SUSTAINABILITY</text>
+  <text x="85" y="508" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">"Where can I find free water refill stations?"</text>
+
+  <rect x="70" y="540" width="320" height="75" rx="12" fill="#1E293B"/>
+  <text x="85" y="565" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#94A3B8">TELEMETRY STATS</text>
+  <text x="85" y="585" font-family="system-ui, sans-serif" font-weight="900" font-size="13" fill="#00FF87">Avg Latency: 12ms • Context: 1M Tokens</text>
+  <text x="85" y="603" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">Schema: Pydantic ChatQueryResponse</text>
+
+  <!-- Right: Conversation Stream -->
+  <rect x="450" y="125" width="710" height="515" rx="20" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+  
+  <!-- Bubble 1: Fan Message -->
+  <rect x="680" y="160" width="450" height="70" rx="16" fill="#2563EB"/>
+  <text x="705" y="190" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#FFFFFF">FAN (Section 112):</text>
+  <text x="705" y="212" font-family="system-ui, sans-serif" font-size="14" fill="#FFFFFF">What's the quickest transit route to downtown after the final whistle?</text>
+
+  <!-- Bubble 2: Gemini AI Response -->
+  <rect x="480" y="250" width="620" height="175" rx="16" fill="#0A101E" stroke="#00FF87" stroke-width="1.5"/>
+  <circle cx="515" cy="285" r="14" fill="#00FF87"/>
+  <text x="515" y="291" font-family="system-ui, sans-serif" font-weight="900" font-size="13" fill="#080C14" text-anchor="middle">⚡</text>
+  <text x="540" y="290" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#00FF87">PITCHPULSE GENAI // Official Response</text>
+  <text x="515" y="325" font-family="system-ui, sans-serif" font-size="13" fill="#E2E8F0">1. Take the <tspan fill="#38BDF8" font-weight="700">FIFA Express Metro Blue Line</tspan> departing from North Transit Plaza.</text>
+  <text x="515" y="350" font-family="system-ui, sans-serif" font-size="13" fill="#E2E8F0">2. Trains depart every 3 minutes with dedicated pedestrian ramp access.</text>
+  <text x="515" y="375" font-family="system-ui, sans-serif" font-size="13" fill="#E2E8F0">3. Avoid Gate C turnstiles (currently 78% surge); use <tspan fill="#00FF87" font-weight="700">Gate D Egress Concourse</tspan>.</text>
+  <text x="515" y="405" font-family="system-ui, sans-serif" font-weight="700" font-size="11" fill="#94A3B8">Action: transit • Confidence: 99.4% • Model: Gemini 2.5 Flash • 14ms</text>
+
+  <!-- Input Box at Bottom -->
+  <rect x="480" y="555" width="530" height="55" rx="12" fill="#0A101E" stroke="#334155" stroke-width="1"/>
+  <text x="505" y="588" font-family="system-ui, sans-serif" font-size="14" fill="#94A3B8">Ask in English, Spanish, French, or Arabic...</text>
+
+  <rect x="1025" y="555" width="105" height="55" rx="12" fill="#00FF87"/>
+  <text x="1077" y="588" font-family="system-ui, sans-serif" font-weight="800" font-size="14" fill="#080C14" text-anchor="middle">Send ➔</text>
+</svg>
