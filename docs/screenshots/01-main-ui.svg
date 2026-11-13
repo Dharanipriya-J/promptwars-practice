@@ -53,9 +53,9 @@
   <text x="920" y="160" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#94A3B8">GEMINI 2.5 INFERENCE</text>
   <text x="920" y="205" font-family="system-ui, sans-serif" font-weight="900" font-size="36" fill="#38BDF8">14ms <tspan font-size="16" fill="#94A3B8" font-weight="500">Real-Time</tspan></text>
 
-  <!-- Main Wayfinding & Operations Panel -->
+  <!-- Main Wayfinding &amp; Operations Panel -->
   <rect x="40" y="260" width="730" height="380" rx="20" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
-  <text x="70" y="305" font-family="system-ui, sans-serif" font-weight="800" font-size="18" fill="#FFFFFF">🏟️ Dynamic Stadium Gate Telemetry & Crowd Flow</text>
+  <text x="70" y="305" font-family="system-ui, sans-serif" font-weight="800" font-size="18" fill="#FFFFFF">🏟️ Dynamic Stadium Gate Telemetry &amp; Crowd Flow</text>
   
   <!-- Gate Row 1 -->
   <rect x="70" y="330" width="670" height="60" rx="12" fill="#1A243B"/>

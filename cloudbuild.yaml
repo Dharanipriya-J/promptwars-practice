@@ -11,7 +11,7 @@ steps:
         python3 tests/test_stadium_ops.py
     env:
       - 'GEMINI_API_KEY=$$GEMINI_API_KEY'
-      - 'STAFF_SECRET_TOKEN=fifa-staff-secure-2026'
+      - 'STAFF_SECRET_TOKEN=ci-test-staff-token-32-chars-long'
     secretEnv: ['GEMINI_API_KEY']
 
   # Step 2: Build Docker image

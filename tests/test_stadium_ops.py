@@ -494,6 +494,15 @@ class TestPitchPulseSuite(unittest.TestCase):
         self.assertIn("Gate B", route.recommended_gate)
         self.assertIn("Quiet Suite", route.nearest_quiet_room)
 
+    def test_44_payload_too_large_returns_413(self):
+        """Requests with Content-Length exceeding 64KB threshold return 413 Payload Too Large."""
+        headers = {"Content-Length": str(100 * 1024), "Content-Type": "application/json"}
+        r = client.post("/api/assistant/query", headers=headers, content=b"{}" * 500)
+        self.assertEqual(r.status_code, 413)
+        self.assertIn("Payload too large", r.json()["error"])
+        # Check security headers on 413 response
+        self.assertEqual(r.headers.get("x-content-type-options"), "nosniff")
+
 
 if __name__ == "__main__":
     unittest.main()

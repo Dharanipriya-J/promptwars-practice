@@ -22,7 +22,7 @@
   <!-- Left Form Column: Accessibility Profile Selector -->
   <rect x="40" y="125" width="450" height="515" rx="20" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
   <text x="70" y="170" font-family="system-ui, sans-serif" font-weight="800" font-size="18" fill="#FFFFFF">Select Mobility Profile</text>
-  <text x="70" y="195" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Tailors wayfinding to step-free ramps, elevators & quiet zones</text>
+  <text x="70" y="195" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Tailors wayfinding to step-free ramps, elevators &amp; quiet zones</text>
 
   <!-- Profile Option 1: Wheelchair Selected -->
   <rect x="70" y="220" width="390" height="70" rx="14" fill="#0A101E" stroke="#00FF87" stroke-width="2"/>
@@ -80,11 +80,11 @@
   <text x="570" y="495" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#FFD200">🎧 SENSORY QUIET SUITE #2</text>
   <text x="570" y="520" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">Location: Level 2 East Mezzanine</text>
   <text x="570" y="540" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Equipped with noise-cancelling</text>
-  <text x="570" y="560" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">headsets & weighted blankets.</text>
+  <text x="570" y="560" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">headsets &amp; weighted blankets.</text>
   <text x="570" y="590" font-family="system-ui, sans-serif" font-weight="700" font-size="12" fill="#00FF87">Distance: 45 meters</text>
 
   <rect x="850" y="465" width="280" height="145" rx="14" fill="#0A101E" stroke="#1E293B" stroke-width="1.5"/>
-  <text x="870" y="495" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#38BDF8">🚰 HYDRATION & REFILL</text>
+  <text x="870" y="495" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#38BDF8">🚰 HYDRATION &amp; REFILL</text>
   <text x="870" y="520" font-family="system-ui, sans-serif" font-size="12" fill="#CBD5E1">Eco-Station #4 (Sec 108)</text>
   <text x="870" y="540" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">Free chilled filtered water refill</text>
   <text x="870" y="560" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">stations for reusable bottles.</text>

@@ -10,43 +10,40 @@
   <rect width="1200" height="675" fill="url(#bg4)"/>
   
   <!-- Terminal Window Container -->
-  <rect x="60" y="40" width="1080" height="595" rx="16" fill="#0D1117" stroke="#30363D" stroke-width="1.5"/>
+  <rect x="60" y="30" width="1080" height="615" rx="16" fill="#0D1117" stroke="#30363D" stroke-width="1.5"/>
   
   <!-- Window Header with Mac Controls -->
-  <rect x="60" y="40" width="1080" height="42" rx="16" fill="#161B22"/>
-  <circle cx="85" cy="61" r="6" fill="#FF5F56"/>
-  <circle cx="105" cy="61" r="6" fill="#FFBD2E"/>
-  <circle cx="125" cy="61" r="6" fill="#27C93F"/>
-  <text x="600" y="66" font-family="monospace" font-size="13" fill="#8B949E" text-anchor="middle">terminal — tests/test_stadium_ops.py — python3 -v</text>
+  <rect x="60" y="30" width="1080" height="42" rx="16" fill="#161B22"/>
+  <circle cx="85" cy="51" r="6" fill="#FF5F56"/>
+  <circle cx="105" cy="51" r="6" fill="#FFBD2E"/>
+  <circle cx="125" cy="51" r="6" fill="#27C93F"/>
+  <text x="600" y="56" font-family="monospace" font-size="13" fill="#8B949E" text-anchor="middle">terminal — pytest tests/ -v --cov=src --cov=services</text>
 
   <!-- Terminal Content -->
-  <text x="90" y="120" font-family="monospace" font-size="14" fill="#58A6FF">dharani@Dharanis-MacBook promptwars-practice % <tspan fill="#F0F6FC">python3 tests/test_stadium_ops.py</tspan></text>
+  <text x="90" y="105" font-family="monospace" font-size="13" fill="#58A6FF">dharani@Dharanis-MacBook promptwars-practice % <tspan fill="#F0F6FC">pytest tests/ -v --cov=src --cov=services</tspan></text>
 
-  <text x="90" y="160" font-family="monospace" font-size="13" fill="#8B949E">test_01_health_check_endpoint (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="180" font-family="monospace" font-size="13" fill="#8B949E">Verify system health check confirms Google Cloud Run readiness. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+  <text x="90" y="135" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_01_health_returns_200 <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="160" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_03_security_headers_present <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="185" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_12_wheelchair_route_via_gate_b <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="210" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_16_gemini_called_when_key_present <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="235" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_24_offline_safety_emergency_guidance <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="260" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_28_rate_limit_429 <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="285" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_36_malicious_prompt_injection_safe <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="310" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_41_incidents_persistence_and_status_tracking <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="335" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_42_dijkstra_graph_routing_all_segments_verified <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
+  <text x="90" y="360" font-family="monospace" font-size="12" fill="#8B949E">tests/test_stadium_ops.py::TestPitchPulseSuite::test_44_payload_too_large_returns_413 <tspan fill="#3FB950" font-weight="bold">PASSED</tspan></text>
 
-  <text x="90" y="210" font-family="monospace" font-size="13" fill="#8B949E">test_02_gate_telemetry (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="230" font-family="monospace" font-size="13" fill="#8B949E">Verify crowd density and accessible ramp availability for stadium gates. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
+  <!-- Coverage Table -->
+  <text x="90" y="395" font-family="monospace" font-size="12" fill="#58A6FF">================================ tests coverage ================================</text>
+  <text x="90" y="420" font-family="monospace" font-size="11" fill="#8B949E">Name                         Stmts   Miss  Cover   Missing</text>
+  <text x="90" y="440" font-family="monospace" font-size="11" fill="#8B949E">----------------------------------------------------------</text>
+  <text x="90" y="460" font-family="monospace" font-size="11" fill="#C9D1D9">services/gemini_service.py     142     19    87%   offline-engine, fallback</text>
+  <text x="90" y="480" font-family="monospace" font-size="11" fill="#C9D1D9">src/routes/stadium.py           75      1    99%   telemetry, incident dispatch</text>
+  <text x="90" y="500" font-family="monospace" font-size="11" fill="#C9D1D9">src/utils/routing.py           166     11    93%   dijkstra-graph-routing</text>
+  <text x="90" y="520" font-family="monospace" font-size="11" fill="#C9D1D9">src/utils/security.py           72      9    88%   rate-limit, hmac-auth</text>
+  <text x="90" y="540" font-family="monospace" font-size="11" fill="#8B949E">----------------------------------------------------------</text>
+  <text x="90" y="560" font-family="monospace" font-size="12" fill="#F0F6FC" font-weight="bold">TOTAL                          718     85    88%</text>
 
-  <text x="90" y="260" font-family="monospace" font-size="13" fill="#8B949E">test_03_accessible_route_wheelchair (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="280" font-family="monospace" font-size="13" fill="#8B949E">Verify step-free wheelchair routing recommends accessible ramps and elevators. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
-
-  <text x="90" y="310" font-family="monospace" font-size="13" fill="#8B949E">test_04_accessible_route_sensory_sensitive (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="330" font-family="monospace" font-size="13" fill="#8B949E">Verify sensory-sensitive routing locates quiet rooms and low-noise concourses. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
-
-  <text x="90" y="360" font-family="monospace" font-size="13" fill="#8B949E">test_05_route_empty_input_validation (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="380" font-family="monospace" font-size="13" fill="#8B949E">Verify routing rejects empty section strings with 422 Unprocessable Entity. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
-
-  <text x="90" y="410" font-family="monospace" font-size="13" fill="#8B949E">test_06_gemini_multilingual_assistant (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="430" font-family="monospace" font-size="13" fill="#8B949E">Verify Gemini assistant accurately answers fan transit queries. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
-
-  <text x="90" y="460" font-family="monospace" font-size="13" fill="#8B949E">test_07_gemini_spanish_assistance (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="480" font-family="monospace" font-size="13" fill="#8B949E">Verify multilingual Spanish language response capability. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
-
-  <text x="90" y="510" font-family="monospace" font-size="13" fill="#8B949E">test_08_gemini_empty_prompt_validation (__main__.TestPitchPulseOperations)</text>
-  <text x="90" y="530" font-family="monospace" font-size="13" fill="#8B949E">Verify assistant rejects 1-character prompts via strict Pydantic validation. ... <tspan fill="#3FB950" font-weight="bold">ok</tspan></text>
-
-  <text x="90" y="560" font-family="monospace" font-size="14" fill="#3FB950" font-weight="bold">----------------------------------------------------------------------</text>
-  <text x="90" y="585" font-family="monospace" font-size="14" fill="#3FB950" font-weight="bold">Ran 10 tests in 0.001s</text>
-  <text x="90" y="610" font-family="monospace" font-size="15" fill="#3FB950" font-weight="bold">OK (100% Passing — Criterion #4: Testing Verified)</text>
+  <text x="90" y="590" font-family="monospace" font-size="14" fill="#3FB950" font-weight="bold">============================== 44 passed in 0.23s ==============================</text>
+  <text x="90" y="615" font-family="monospace" font-size="13" fill="#58A6FF" font-weight="bold">OK (100% Passing — Criterion #4: Testing Verified — 88% Code Coverage)</text>
 </svg>

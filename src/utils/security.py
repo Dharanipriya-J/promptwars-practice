@@ -17,9 +17,42 @@ from src.config import settings
 RATE_LIMIT_STANDARD = 30
 RATE_LIMIT_ASSISTANT = 10
 RATE_LIMIT_WINDOW = 60
+MAX_CONTENT_LENGTH = 64 * 1024  # 64 KB limit for JSON payloads
 
 # In-Memory request timestamp storage per client IP
 _CLIENT_REQUESTS: dict[str, list[float]] = defaultdict(list)
+
+
+def _prune_expired_client_ips(now: float) -> None:
+    """Evicts idle client IP buckets to guarantee bounded memory footprint."""
+    if len(_CLIENT_REQUESTS) > 500:
+        expired_ips = [
+            ip for ip, timestamps in _CLIENT_REQUESTS.items()
+            if not timestamps or (now - timestamps[-1] >= RATE_LIMIT_WINDOW)
+        ]
+        for ip in expired_ips:
+            _CLIENT_REQUESTS.pop(ip, None)
+
+
+class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
+    """Enforces strict upper limit on incoming HTTP request body sizes to mitigate DoS attacks."""
+
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length:
+            try:
+                if int(content_length) > MAX_CONTENT_LENGTH:
+                    resp = JSONResponse(
+                        status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+                        content={
+                            "error": "Payload too large",
+                            "message": f"Request body exceeds maximum allowed size of {MAX_CONTENT_LENGTH // 1024} KB.",
+                        },
+                    )
+                    return apply_security_headers(resp)
+            except ValueError:
+                pass
+        return await call_next(request)
 
 
 def apply_security_headers(response: Response) -> Response:
@@ -78,6 +111,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             client_ip = request.client.host if request.client and request.client.host else "127.0.0.1"
 
         now = time.monotonic()
+        _prune_expired_client_ips(now)
         timestamps = _CLIENT_REQUESTS[client_ip]
         # Discard records older than rate window
         _CLIENT_REQUESTS[client_ip] = [t for t in timestamps if now - t < RATE_LIMIT_WINDOW]

@@ -270,17 +270,38 @@ function renderGates(gates) {
 
     const waitRow = document.createElement("div");
     waitRow.className = "flex justify-between";
-    waitRow.innerHTML = `<span class="text-slate-400">Queue Wait:</span><span class="font-extrabold text-white">${g.wait_time_minutes} mins</span>`;
+    const waitLbl = document.createElement("span");
+    waitLbl.className = "text-slate-400";
+    waitLbl.textContent = "Queue Wait:";
+    const waitVal = document.createElement("span");
+    waitVal.className = "font-extrabold text-white";
+    waitVal.textContent = `${g.wait_time_minutes} mins`;
+    waitRow.appendChild(waitLbl);
+    waitRow.appendChild(waitVal);
     detailsDiv.appendChild(waitRow);
 
     const rampRow = document.createElement("div");
     rampRow.className = "flex justify-between";
-    rampRow.innerHTML = `<span class="text-slate-400">Step-Free:</span><span class="font-bold ${g.accessible_ramp ? "text-pitch-green" : "text-slate-500"}">${g.accessible_ramp ? "♿ Verified Ramp" : "Stairs Only"}</span>`;
+    const rampLbl = document.createElement("span");
+    rampLbl.className = "text-slate-400";
+    rampLbl.textContent = "Step-Free:";
+    const rampVal = document.createElement("span");
+    rampVal.className = `font-bold ${g.accessible_ramp ? "text-pitch-green" : "text-slate-500"}`;
+    rampVal.textContent = g.accessible_ramp ? "♿ Verified Ramp" : "Stairs Only";
+    rampRow.appendChild(rampLbl);
+    rampRow.appendChild(rampVal);
     detailsDiv.appendChild(rampRow);
 
     const surgeForecastRow = document.createElement("div");
     surgeForecastRow.className = "flex justify-between";
-    surgeForecastRow.innerHTML = `<span class="text-slate-400">15m Forecast:</span><span class="font-bold text-pitch-yellow">${g.predicted_surge_15m || g.density_percentage}%</span>`;
+    const surgeLbl = document.createElement("span");
+    surgeLbl.className = "text-slate-400";
+    surgeLbl.textContent = "15m Forecast:";
+    const surgeVal = document.createElement("span");
+    surgeVal.className = "font-bold text-pitch-yellow";
+    surgeVal.textContent = `${g.predicted_surge_15m || g.density_percentage}%`;
+    surgeForecastRow.appendChild(surgeLbl);
+    surgeForecastRow.appendChild(surgeVal);
     detailsDiv.appendChild(surgeForecastRow);
 
     // Data freshness indicator
@@ -493,7 +514,12 @@ async function submitChatQuery() {
       const speakBtn = document.createElement("button");
       speakBtn.type = "button";
       speakBtn.className = "speak-btn";
-      speakBtn.innerHTML = `<span>🔊</span><span>Read Aloud</span>`;
+      const iconSpan = document.createElement("span");
+      iconSpan.textContent = "🔊 ";
+      const textSpan = document.createElement("span");
+      textSpan.textContent = "Read Aloud";
+      speakBtn.appendChild(iconSpan);
+      speakBtn.appendChild(textSpan);
       speakBtn.setAttribute("aria-label", "Read AI response aloud");
       speakBtn.addEventListener("click", () => speakText(data.response, selectedLang));
       metaDiv.appendChild(speakBtn);
@@ -551,7 +577,14 @@ function renderConcessions(stands) {
 
     const header = document.createElement("div");
     header.className = "flex items-center justify-between mb-2";
-    header.innerHTML = `<span class="text-xs font-black text-pitch-yellow">${c.section}</span><span class="text-xs font-extrabold text-white">Wait: ${c.queue_wait_minutes} mins</span>`;
+    const secBadge = document.createElement("span");
+    secBadge.className = "text-xs font-black text-pitch-yellow";
+    secBadge.textContent = c.section;
+    const waitBadge = document.createElement("span");
+    waitBadge.className = "text-xs font-extrabold text-white";
+    waitBadge.textContent = `Wait: ${c.queue_wait_minutes} mins`;
+    header.appendChild(secBadge);
+    header.appendChild(waitBadge);
     card.appendChild(header);
 
     const title = document.createElement("h3");
@@ -567,7 +600,12 @@ function renderConcessions(stands) {
     if (c.has_water_refill) {
       const refillBadge = document.createElement("div");
       refillBadge.className = "pt-3 border-t border-pitch-border flex items-center gap-1.5 text-xs text-pitch-green font-bold";
-      refillBadge.innerHTML = `<span>💧</span><span>Free Eco-Water Refill Station</span>`;
+      const iconSpan = document.createElement("span");
+      iconSpan.textContent = "💧";
+      const textSpan = document.createElement("span");
+      textSpan.textContent = "Free Eco-Water Refill Station";
+      refillBadge.appendChild(iconSpan);
+      refillBadge.appendChild(textSpan);
       card.appendChild(refillBadge);
     }
 

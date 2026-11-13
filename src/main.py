@@ -18,7 +18,11 @@ from src.config import settings
 from src.routes.assistant import router as assistant_router
 from src.routes.stadium import router as stadium_router
 from src.utils.cache import cache_stats
-from src.utils.security import RateLimitMiddleware, SecurityHeadersMiddleware
+from src.utils.security import (
+    RateLimitMiddleware,
+    RequestSizeLimitMiddleware,
+    SecurityHeadersMiddleware,
+)
 
 # Structured logging configuration
 logging.config.dictConfig(
@@ -68,6 +72,7 @@ app = FastAPI(
 
 # Compression & Security Middleware Stack
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+app.add_middleware(RequestSizeLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
