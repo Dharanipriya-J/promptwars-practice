@@ -19,3 +19,7 @@ pitchpulse-fifa2026-solution.zip
 docs/
 tests/
 README.md
+
+*.db
+*.sqlite
+data/

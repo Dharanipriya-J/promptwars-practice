@@ -59,7 +59,9 @@ class AccessibleRouteResponse(BaseModel):
     estimated_walk_minutes: int
     google_maps_directions_url: str
     venue_name: str = "MetLife Stadium (FIFA World Cup 2026 Final Venue)"
-    routing_method: str = Field("graph_heuristic", description="'graph_heuristic' — Dijkstra-informed, live gate data validated")
+    routing_method: str = Field(
+        "graph_heuristic", description="'graph_heuristic' — Dijkstra-informed, live gate data validated"
+    )
 
 
 class ChatQueryRequest(BaseModel):

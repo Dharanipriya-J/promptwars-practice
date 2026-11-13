@@ -32,8 +32,7 @@ class Settings(BaseSettings):
         """
         if not self.staff_secret_token:
             msg = (
-                "STAFF_SECRET_TOKEN is not set. "
-                "Incident dispatch endpoint will return 503 until a token is configured."
+                "STAFF_SECRET_TOKEN is not set. Incident dispatch endpoint will return 503 until a token is configured."
             )
             if self.environment == "production":
                 logger.critical(msg)

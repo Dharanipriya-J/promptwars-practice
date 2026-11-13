@@ -27,7 +27,8 @@ def _prune_expired_client_ips(now: float) -> None:
     """Evicts idle client IP buckets to guarantee bounded memory footprint."""
     if len(_CLIENT_REQUESTS) > 500:
         expired_ips = [
-            ip for ip, timestamps in _CLIENT_REQUESTS.items()
+            ip
+            for ip, timestamps in _CLIENT_REQUESTS.items()
             if not timestamps or (now - timestamps[-1] >= RATE_LIMIT_WINDOW)
         ]
         for ip in expired_ips:

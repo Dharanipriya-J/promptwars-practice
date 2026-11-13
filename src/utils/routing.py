@@ -111,7 +111,9 @@ class VenueGraph:
         # 1. Gates
         self.add_node(VenueNode("gate-a", "Gate A (Main North Plaza)", "gate", step_free_entry=True))
         self.add_node(VenueNode("gate-b", "Gate B (East ADA Concourse)", "gate", step_free_entry=True))
-        self.add_node(VenueNode("gate-c", "Gate C (South Concourse Boulevard)", "gate", step_free_entry=False))  # Stairs only!
+        self.add_node(
+            VenueNode("gate-c", "Gate C (South Concourse Boulevard)", "gate", step_free_entry=False)
+        )  # Stairs only!
         self.add_node(VenueNode("gate-d", "Gate D (West NJ Transit Hub)", "gate", step_free_entry=True))
 
         # 2. Concourse Hubs (Level 1)
@@ -133,91 +135,205 @@ class VenueGraph:
         # 5. Connect Gates to Level 1 Concourse
         # Gate A -> North Concourse (Ramp, tactile surface)
         self.add_edge(
-            "gate-a", "concourse-north", weight=60, step_free=True, has_ramp=True,
-            has_stairs=False, has_elevator=False, sensory_level="medium",
+            "gate-a",
+            "concourse-north",
+            weight=60,
+            step_free=True,
+            has_ramp=True,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
             instruction="Enter Gate A via dedicated ramp with high-contrast tactile pavers",
         )
 
         # Gate B -> East Concourse (Full ADA Priority Corridor, Low-Sensory)
         self.add_edge(
-            "gate-b", "concourse-east", weight=45, step_free=True, has_ramp=True,
-            has_stairs=False, has_elevator=False, sensory_level="low",
+            "gate-b",
+            "concourse-east",
+            weight=45,
+            step_free=True,
+            has_ramp=True,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="low",
             instruction="Enter Gate B priority ADA lane — seamless zero-grade threshold",
         )
 
         # Gate C -> South Concourse (Has outdoor stairs, NO ramp)
         self.add_edge(
-            "gate-c", "concourse-south", weight=80, step_free=False, has_ramp=False,
-            has_stairs=True, has_elevator=False, sensory_level="high",
+            "gate-c",
+            "concourse-south",
+            weight=80,
+            step_free=False,
+            has_ramp=False,
+            has_stairs=True,
+            has_elevator=False,
+            sensory_level="high",
             instruction="Proceed through Gate C turnstiles via 18 exterior concrete steps (no ramp)",
         )
 
         # Gate D -> West Concourse (Transit Hub ramp)
         self.add_edge(
-            "gate-d", "concourse-west", weight=55, step_free=True, has_ramp=True,
-            has_stairs=False, has_elevator=False, sensory_level="medium",
+            "gate-d",
+            "concourse-west",
+            weight=55,
+            step_free=True,
+            has_ramp=True,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
             instruction="Enter Gate D via NJ Transit covered accessible walkway",
         )
 
         # 6. Concourse Interconnects (All level & step-free)
-        self.add_edge("concourse-north", "concourse-east", weight=70, step_free=True, has_ramp=False, has_stairs=False, has_elevator=False, sensory_level="low")
-        self.add_edge("concourse-east", "concourse-south", weight=70, step_free=True, has_ramp=False, has_stairs=False, has_elevator=False, sensory_level="medium")
-        self.add_edge("concourse-south", "concourse-west", weight=70, step_free=True, has_ramp=False, has_stairs=False, has_elevator=False, sensory_level="medium")
-        self.add_edge("concourse-west", "concourse-north", weight=70, step_free=True, has_ramp=False, has_stairs=False, has_elevator=False, sensory_level="medium")
+        self.add_edge(
+            "concourse-north",
+            "concourse-east",
+            weight=70,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="low",
+        )
+        self.add_edge(
+            "concourse-east",
+            "concourse-south",
+            weight=70,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
+        )
+        self.add_edge(
+            "concourse-south",
+            "concourse-west",
+            weight=70,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
+        )
+        self.add_edge(
+            "concourse-west",
+            "concourse-north",
+            weight=70,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
+        )
 
         # 7. Vertical Transit Connections
         # East ADA Concourse -> Direct ADA Elevator Bank 2 access
         self.add_edge(
-            "concourse-east", "elevator-ada-2", weight=15, step_free=True, has_ramp=True,
-            has_stairs=False, has_elevator=True, sensory_level="low",
+            "concourse-east",
+            "elevator-ada-2",
+            weight=15,
+            step_free=True,
+            has_ramp=True,
+            has_stairs=False,
+            has_elevator=True,
+            sensory_level="low",
             instruction="Proceed along direct priority ADA corridor to Elevator Bank 2",
         )
 
         # North Concourse -> Elevator 2 -> Mezzanine North
         self.add_edge(
-            "concourse-north", "elevator-ada-2", weight=30, step_free=True, has_ramp=False,
-            has_stairs=False, has_elevator=True, sensory_level="low",
+            "concourse-north",
+            "elevator-ada-2",
+            weight=30,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=True,
+            sensory_level="low",
             instruction="Board Elevator Bank 2 (North ADA Tower) with audio floor announcements and Braille buttons",
         )
         self.add_edge(
-            "elevator-ada-2", "mezzanine-north", weight=30, step_free=True, has_ramp=False,
-            has_stairs=False, has_elevator=True, sensory_level="low",
+            "elevator-ada-2",
+            "mezzanine-north",
+            weight=30,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=True,
+            sensory_level="low",
             instruction="Exit elevator onto Level 2 Mezzanine — step-free tactile pathway",
         )
 
         # South Concourse -> Elevator 1 -> Mezzanine South
         self.add_edge(
-            "concourse-south", "elevator-ada-1", weight=35, step_free=True, has_ramp=False,
-            has_stairs=False, has_elevator=True, sensory_level="medium",
+            "concourse-south",
+            "elevator-ada-1",
+            weight=35,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=True,
+            sensory_level="medium",
             instruction="Board Elevator Bank 1 (South ADA Tower)",
         )
         self.add_edge(
-            "elevator-ada-1", "mezzanine-south", weight=35, step_free=True, has_ramp=False,
-            has_stairs=False, has_elevator=True, sensory_level="medium",
+            "elevator-ada-1",
+            "mezzanine-south",
+            weight=35,
+            step_free=True,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=True,
+            sensory_level="medium",
             instruction="Exit elevator onto South Mezzanine Level 2",
         )
 
         # East Concourse -> Escalator -> Mezzanine North (Not step-free for wheelchairs!)
         self.add_edge(
-            "concourse-east", "escalator-east", weight=25, step_free=False, has_ramp=False,
-            has_stairs=False, has_elevator=False, sensory_level="medium",
+            "concourse-east",
+            "escalator-east",
+            weight=25,
+            step_free=False,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
             instruction="Take Escalator East towards Level 2 (non-wheelchair accessible)",
         )
         self.add_edge(
-            "escalator-east", "mezzanine-north", weight=25, step_free=False, has_ramp=False,
-            has_stairs=False, has_elevator=False, sensory_level="medium",
+            "escalator-east",
+            "mezzanine-north",
+            weight=25,
+            step_free=False,
+            has_ramp=False,
+            has_stairs=False,
+            has_elevator=False,
+            sensory_level="medium",
             instruction="Step off escalator onto Mezzanine Level 2",
         )
 
         # South Concourse -> Stairs -> Mezzanine South (Stairs only)
         self.add_edge(
-            "concourse-south", "stairs-south", weight=40, step_free=False, has_ramp=False,
-            has_stairs=True, has_elevator=False, sensory_level="high",
+            "concourse-south",
+            "stairs-south",
+            weight=40,
+            step_free=False,
+            has_ramp=False,
+            has_stairs=True,
+            has_elevator=False,
+            sensory_level="high",
             instruction="Climb Stairway South (24 steps)",
         )
         self.add_edge(
-            "stairs-south", "mezzanine-south", weight=40, step_free=False, has_ramp=False,
-            has_stairs=True, has_elevator=False, sensory_level="high",
+            "stairs-south",
+            "mezzanine-south",
+            weight=40,
+            step_free=False,
+            has_ramp=False,
+            has_stairs=True,
+            has_elevator=False,
+            sensory_level="high",
             instruction="Reach South Mezzanine landing",
         )
 
@@ -303,7 +419,9 @@ class VenueGraph:
         instructions = []
         for seg in best_path:
             instructions.append(seg.instruction)
-        instructions.append(f"Follow illuminated high-contrast tactile floor indicators directly to Section {target_section.upper()}")
+        instructions.append(
+            f"Follow illuminated high-contrast tactile floor indicators directly to Section {target_section.upper()}"
+        )
 
         # Quiet room and elevator metadata
         if is_sensory or best_gate == "gate-b":
